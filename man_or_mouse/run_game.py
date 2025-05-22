@@ -86,23 +86,57 @@ def main():
     if results.get('total_buy_ins', 0) > 0:
         print(f"Total buy-ins: {results['total_buy_ins']} chips")
     
-    print("\nPlayer chips:")
+    print("\nPlayer chips and net winnings:")
     
-    # Sort players by chips
-    sorted_players = sorted(
-        [(name, data['chips']) for name, data in results['players'].items()],
-        key=lambda x: x[1],
-        reverse=True
-    )
+    # Calculate net winnings for each player
+    player_results = []
+    for name, data in results['players'].items():
+        final_chips = data['chips']
+        buy_ins = data.get('total_buy_ins', 0)  # Individual buy-ins per player
+        net_winnings = final_chips - args.chips - buy_ins  # final - initial - buy_ins
+        
+        player_results.append({
+            'name': name,
+            'final_chips': final_chips,
+            'buy_ins': buy_ins,
+            'net_winnings': net_winnings
+        })
     
-    for name, chips in sorted_players:
+    # Sort by net winnings (highest first)
+    player_results.sort(key=lambda x: x['net_winnings'], reverse=True)
+    
+    # Find the winner
+    winner = player_results[0]
+    
+    for result in player_results:
+        name = result['name']
+        final_chips = result['final_chips']
+        buy_ins = result['buy_ins']
+        net_winnings = result['net_winnings']
+        
         # Extract strategy from player name if it contains strategy info
         if "(" in name and ")" in name:
             player_name = name.split("(")[0].strip()
             strategy = name.split("(")[1].split(")")[0]
-            print(f"{player_name}: {chips} chips (Strategy: {strategy})")
+            
+            if buy_ins > 0:
+                print(f"{player_name}: {final_chips} chips (bought in {buy_ins}) = {net_winnings:+d} net (Strategy: {strategy})")
+            else:
+                print(f"{player_name}: {final_chips} chips = {net_winnings:+d} net (Strategy: {strategy})")
         else:
-            print(f"{name}: {chips} chips")
+            if buy_ins > 0:
+                print(f"{name}: {final_chips} chips (bought in {buy_ins}) = {net_winnings:+d} net")
+            else:
+                print(f"{name}: {final_chips} chips = {net_winnings:+d} net")
+    
+    # Announce the winner
+    winner_name = winner['name']
+    if "(" in winner_name and ")" in winner_name:
+        winner_display = winner_name.split("(")[0].strip()
+    else:
+        winner_display = winner_name
+        
+    print(f"\n🏆 Winner: {winner_display} with {winner['net_winnings']:+d} net chips!")
     
     # Print chip conservation check
     if 'chip_conservation' in results:

@@ -80,7 +80,7 @@ class ManOrMouseGame:
             # Check if player needs to buy in to ante
             if player.chips < 1:
                 buy_in_amount = max(10, abs(player.chips) + 1)  # Buy in at least 10 chips or enough to cover negative balance
-                player.chips += buy_in_amount
+                player.buy_in(buy_in_amount)  # Use player's buy_in method
                 self.buy_ins += buy_in_amount
                 round_data["buy_ins"] += buy_in_amount
                 
@@ -205,7 +205,7 @@ class ManOrMouseGame:
                 # Check if player needs to buy in to pay penalty
                 if player.chips < self.pot:
                     buy_in_amount = max(10, self.pot - player.chips)
-                    player.chips += buy_in_amount
+                    player.buy_in(buy_in_amount)  # Use player's buy_in method
                     self.buy_ins += buy_in_amount
                     round_data["buy_ins"] += buy_in_amount
                     
@@ -255,7 +255,7 @@ class ManOrMouseGame:
                 # Check if player needs to buy in to pay penalty
                 if player.chips < prev_pot:
                     buy_in_amount = max(10, prev_pot - player.chips)
-                    player.chips += buy_in_amount
+                    player.buy_in(buy_in_amount)  # Use player's buy_in method
                     self.buy_ins += buy_in_amount
                     round_data["buy_ins"] += buy_in_amount
                     
@@ -328,7 +328,8 @@ class ManOrMouseGame:
         
         for player in self.players:
             results["players"][player.name] = {
-                "chips": player.chips
+                "chips": player.chips,
+                "total_buy_ins": player.total_buy_ins  # Include individual buy-ins
             }
         
         # Validate chip conservation

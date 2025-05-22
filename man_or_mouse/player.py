@@ -254,6 +254,8 @@ class Player:
         self.name = name
         self.strategy = strategy
         self.chips = initial_chips
+        self.initial_chips = initial_chips  # Store starting amount
+        self.total_buy_ins = 0  # Track individual buy-ins
         self.hand = None
         self.decision = None
     
@@ -282,6 +284,11 @@ class Player:
         """Pay ante to join the round"""
         self.chips -= amount
         return amount
+    
+    def buy_in(self, amount: int):
+        """Player buys in additional chips"""
+        self.chips += amount
+        self.total_buy_ins += amount
     
     def __str__(self):
         return f"{self.name} ({self.chips} chips)"
