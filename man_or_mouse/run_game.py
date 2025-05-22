@@ -6,7 +6,7 @@ import time
 import argparse
 from typing import List, Dict
 
-from man_or_mouse.player import Player, RandomStrategy, SimpleStrategy
+from man_or_mouse.player import Player, RandomStrategy, SimpleStrategy, MaxEVStrategy
 from man_or_mouse.game import ManOrMouseGame
 
 
@@ -18,6 +18,9 @@ def main():
     parser.add_argument("--rounds", type=int, default=5, help="Number of rounds to play")
     parser.add_argument("--players", type=int, default=4, help="Number of players")
     parser.add_argument("--chips", type=int, default=100, help="Initial chips per player")
+    parser.add_argument("--strategy", type=str, default="mixed", 
+                       choices=["simple", "random", "maxev", "mixed"],
+                       help="Strategy type: simple, random, maxev, or mixed")
     args = parser.parse_args()
     
     # Set random seed or use current time for true randomness
@@ -28,12 +31,36 @@ def main():
     
     # Create players with different strategies
     player_names = ["Alice", "Bob", "Charlie", "Dave", "Eve", "Frank"]
-    strategies_info = [
-        ("SimpleStrategy", SimpleStrategy()),
-        ("RandomStrategy(0.7)", RandomStrategy(man_probability=0.7)),
-        ("RandomStrategy(0.3)", RandomStrategy(man_probability=0.3)),
-        ("SimpleStrategy", SimpleStrategy())
-    ]
+    
+    # Define strategy configurations
+    if args.strategy == "simple":
+        strategies_info = [
+            ("SimpleStrategy", SimpleStrategy()),
+            ("SimpleStrategy", SimpleStrategy()),
+            ("SimpleStrategy", SimpleStrategy()),
+            ("SimpleStrategy", SimpleStrategy())
+        ]
+    elif args.strategy == "random":
+        strategies_info = [
+            ("RandomStrategy(0.5)", RandomStrategy(man_probability=0.5)),
+            ("RandomStrategy(0.5)", RandomStrategy(man_probability=0.5)),
+            ("RandomStrategy(0.5)", RandomStrategy(man_probability=0.5)),
+            ("RandomStrategy(0.5)", RandomStrategy(man_probability=0.5))
+        ]
+    elif args.strategy == "maxev":
+        strategies_info = [
+            ("MaxEVStrategy", MaxEVStrategy()),
+            ("MaxEVStrategy", MaxEVStrategy()),
+            ("MaxEVStrategy", MaxEVStrategy()),
+            ("MaxEVStrategy", MaxEVStrategy())
+        ]
+    else:  # mixed
+        strategies_info = [
+            ("MaxEVStrategy", MaxEVStrategy()),
+            ("SimpleStrategy", SimpleStrategy()),
+            ("RandomStrategy(0.7)", RandomStrategy(man_probability=0.7)),
+            ("RandomStrategy(0.3)", RandomStrategy(man_probability=0.3))
+        ]
     
     # Ensure we don't try to create more players than we have names for
     num_players = min(args.players, len(player_names))
@@ -93,7 +120,6 @@ def main():
             print("✓ Chip conservation verified: All chips are accounted for")
         else:
             print(f"⚠ Chip conservation error: Discrepancy of {conservation['final_chips'] - conservation['expected_total']} chips")
-
 
 if __name__ == "__main__":
     main()
