@@ -32,6 +32,9 @@ man-or-mouse/
     ├── player.py    # Player classes and strategies
     ├── game.py      # Main game mechanics
     └── run_game.py  # Demo script to run a game
+└── probabilities/
+    ├── find_probabilities.py  # Calculates all theoretical win percentages
+    └── probabilities.txt      # List of hands and their respective percentages
 ```
 
 ## How to Run
@@ -46,7 +49,7 @@ python3 -m man_or_mouse.run_game
 python3 -m man_or_mouse.run_game --rounds 10
 
 # Run with a different number of players
-python3 -m man_or_mouse.run_game --players 6
+python3 -m man_or_mouse.run_game --players 5
 
 # Run with different starting chips
 python3 -m man_or_mouse.run_game --chips 200
@@ -63,7 +66,7 @@ python3 -m man_or_mouse.run_game --rounds 8 --players 3 --chips 150
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--rounds` | Number of rounds to play | 5 |
-| `--players` | Number of players (2-6) | 4 |
+| `--players` | Number of players (2-5) | 4 |
 | `--chips` | Initial chips per player | 100 |
 | `--seed` | Random seed for reproducibility | based on current time |
 

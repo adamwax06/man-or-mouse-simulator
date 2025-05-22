@@ -1,0 +1,7 @@
+# Although we don't currently use any external libraries, we will soon update to do some statistical testing
+
+# pandas>=1.5.0
+# numpy>=1.21.0
+# matplotlib>=3.5.0
+# seaborn>=0.11.0
+# scipy>=1.9.0

@@ -18,8 +18,8 @@ class ManOrMouseGame:
             players: List of Player objects
             verbose: Whether to print detailed game info
         """
-        if not 2 <= len(players) <= 6:
-            raise ValueError(f"Game requires 2-6 players, got {len(players)}")
+        if not 2 <= len(players) <= 5:
+            raise ValueError(f"Game requires 2-5 players, got {len(players)}")
             
         self.players = players
         self.peanut = Peanut()
