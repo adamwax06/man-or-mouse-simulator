@@ -28,18 +28,20 @@ def main():
     
     # Create players with different strategies
     player_names = ["Alice", "Bob", "Charlie", "Dave", "Eve", "Frank"]
-    strategies = [
-        SimpleStrategy(),
-        RandomStrategy(man_probability=0.7),
-        RandomStrategy(man_probability=0.3),
-        SimpleStrategy()
+    strategies_info = [
+        ("SimpleStrategy", SimpleStrategy()),
+        ("RandomStrategy(0.7)", RandomStrategy(man_probability=0.7)),
+        ("RandomStrategy(0.3)", RandomStrategy(man_probability=0.3)),
+        ("SimpleStrategy", SimpleStrategy())
     ]
     
     # Ensure we don't try to create more players than we have names for
     num_players = min(args.players, len(player_names))
     
     players = [
-        Player(player_names[i], strategies[i % len(strategies)], initial_chips=args.chips)
+        Player(f"{player_names[i]} ({strategies_info[i % len(strategies_info)][0]})", 
+               strategies_info[i % len(strategies_info)][1], 
+               initial_chips=args.chips)
         for i in range(num_players)
     ]
     
@@ -67,7 +69,13 @@ def main():
     )
     
     for name, chips in sorted_players:
-        print(f"{name}: {chips} chips")
+        # Extract strategy from player name if it contains strategy info
+        if "(" in name and ")" in name:
+            player_name = name.split("(")[0].strip()
+            strategy = name.split("(")[1].split(")")[0]
+            print(f"{player_name}: {chips} chips (Strategy: {strategy})")
+        else:
+            print(f"{name}: {chips} chips")
     
     # Print chip conservation check
     if 'chip_conservation' in results:
